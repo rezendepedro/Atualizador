@@ -4,7 +4,7 @@
   "description": "Atualiador de software dektops",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
@@ -16,10 +16,8 @@
     "url": "https://github.com/rezendepedro/Atualizador/issues"
   },
   "homepage": "https://github.com/rezendepedro/Atualizador#readme",
-  "scripts":{
-    "start": "electron ."
-  },
   "dependencies": {
+    "adm-zip": "^0.4.13",
     "electron": "^7.0.0"
   }
 }
