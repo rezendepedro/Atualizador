@@ -1,0 +1,22 @@
+{
+  "name": "atualizador",
+  "version": "1.0.0",
+  "description": "Atualiador de software dektops",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rezendepedro/Atualizador.git"
+  },
+  "author": "Pedro Rezende Neto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rezendepedro/Atualizador/issues"
+  },
+  "homepage": "https://github.com/rezendepedro/Atualizador#readme",
+  "dependencies": {
+    "electron": "^7.0.0"
+  }
+}
