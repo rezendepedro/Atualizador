@@ -8,7 +8,7 @@ const  AdmZip  = require ('adm-zip');
 const PATH_BACKUP = resolve(__dirname, 'backup');
 const FILE_PROCESS_BACKUP = '\\lastversionTEMP.zip';
 const FILE_NAME = '\\lastversion.zip';
-const PATH_EXTRACT = resolve(__dirname);
+const PATH_RAIZ = resolve(__dirname);
 
 
 
@@ -23,14 +23,24 @@ checkBackup = (pathBackup, filename) => {
       
     return true;  
 }
+roolBack = (path, fileProcess, filename) =>{
+    console.log("Roolback: " + path + fileProcess )
+    if(fs.existsSync(path + fileProcess)){
+        if(fs.existsSync(path + filename)){
+            fs.unlinkSync(path + filename);
+        }      
+        fs.renameSync(path + fileProcess, path + fileName); 
+    }
+}
 
-backupVersion = (path, fileProcess, fileName) => {
+backupVersion = (raiz, path, fileProcess, fileName) => {
     try{
 
         console.log(path);
+       
         // se existir um backup ele renomea temporariamente para fazer o processo
         if(checkBackup(path, fileName)){
-            fs.rename(path + fileName, path + fileProcess); 
+            fs.renameSync(path + fileName, path + fileProcess); 
         }
 
         console.log("2");
@@ -45,33 +55,39 @@ backupVersion = (path, fileProcess, fileName) => {
         // colocar dentro de um repeat lista da raiz do sistema e uma lista de leitura com os arquivos da versão para comprar com a lista que esta pecorrendo 
         const nameFileCurrent = "\\LbcDrbc.exe";
 
-        if(!fs.existsSync(path + nameFileCurrent)){
+        console.log(raiz + nameFileCurrent);
+        if(!fs.existsSync(raiz + nameFileCurrent)){
             console.log("Arquivo nao encontrado!");
             return;
         }
         
-        zip.addLocalFile(path + nameFileCurrent);
-        
+        zip.addLocalFile(raiz + nameFileCurrent);
+       
         console.log("4");
         // compactado arquivos selecionado   
-        zip.writeZip(path + filename); 
-        console.log("5");
-        // deletando arquivo temporario do backup anterior
-        if(fs.exists(path + fileProcess)){               
-            fs.unlinkSync(path + fileProcess);              
-        }
-        console.log("6");
-
-    }catch{
-        // se o processo deu errado ele restaura o backup anterior
-        if(fs.exists(path + fileProcess)){
-            if(fs.exists(path + filename)){
-                fs.unlinkSync(path + filename);
+        zip.writeZip(path + fileName, (error) =>{    
+            if (!error){
+                    console.log("5");
+                // deletando arquivo temporario do backup anterior
+                if(fs.existsSync(path + fileProcess)){               
+                    fs.unlinkSync(path + fileProcess);              
+                }
+                console.log("6");
+            }else{
+                // se o processo deu errado ele restaura o backup anterior
+                roolBack(path, fileProcess, fileName);               
             }
-          
-            fs.rename(path + fileProcess, path + fileName);    
-                
-        }
+
+            console.log(error);
+            
+
+        }); 
+       
+
+    }catch(error){
+        // se o processo deu errado ele restaura o backup anterior
+        console.log(error)
+        roolBack(path, fileProcess, fileName);
     
     }
    
@@ -79,20 +95,19 @@ backupVersion = (path, fileProcess, fileName) => {
     
 }
 
-restoreVersion = () => {
-    
+restoreVersion = () => {    
 }
 
-updateVersion = () => {
+updateVersion = (pathRaiz, pathBackup, fileName, FileNameBackup) => {
 
     try{
 
         if(this.checkBackup(path, filename)){
-            fs.rename(path + filename, path + fileProcess);
+            fs.renameSync(path + filename, path + fileProcess);
         }
         
-        if(!fs.exists(path))
-          fs.mkdir(path);
+        if(!fs.existsSync(path))
+          fs.mkdirSync(path);
 
           const zip = new AdmZip(path + filename);
           const zipEntries = zip.getEntries();
@@ -129,7 +144,7 @@ app.on('ready', () => {
     
     const contextMenu = Menu.buildFromTemplate([
         {label: 'Back-Up', type: 'radio', checked: true, click: () => {
-           backupVersion(PATH_BACKUP, FILE_PROCESS_BACKUP, FILE_NAME);
+           backupVersion(PATH_RAIZ, PATH_BACKUP, FILE_PROCESS_BACKUP, FILE_NAME);
            //show("Exemplo");
         }},
         {label: 'Atualizar', type: 'radio', checked: true, click: () =>{
