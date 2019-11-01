@@ -110,17 +110,34 @@ backupVersion = (raiz, path, pathDowload, fileProcess, fileName, fileDowload) =>
     }
 }
 
-restoreVersion = () => { 
-    console.log('Restaurando versao...')   
+restoreVersion = (raiz, pathBackup, fileProcess, fileBackup) => { 
+    console.log('Restaurando versao...');
+    try{
+        if(checkBackup(pathBackup, fileBackup)){
+            console.log('Extraindo backup versao...');
+            const zip = new AdmZip(pathBackup + fileBackup);  
+            zip.extractAllTo(raiz, true);
+        }else{
+            console.log('Backup nao encontrado, procurando outro backup...');
+            if(fs.existsSync(pathBackup + fileProcess)){
+                console.log(' Entraindo backup anteior...');
+                const zip = new AdmZip(pathBackup + fileProcess);  
+                zip.extractAllTo(raiz, true);
+            }
+        }
+
+        console.log('Versao restaurada')
+
+    } catch{
+
+    }
 }
 
 updateVersion = (raiz, path, pathDowload, fileProcess, fileName, fileDowload) => {
 
     try{
         if (!backupVersion(raiz, path, pathDowload, fileProcess, fileName, fileDowload))
-          throw "Erro ao realizar backup";
-
-       
+          throw "Erro ao realizar backup";       
         
         if(!fs.existsSync(pathDowload))
           fs.mkdirSync(pathDowload);
@@ -152,17 +169,15 @@ app.on('ready', () => {
 
     
     const contextMenu = Menu.buildFromTemplate([
-        {label: 'Back-Up', type: 'radio', checked: true, click: () => {
+        {label: 'Back-Up', type: 'radio', checked: false, click: () => {
            backupVersion(PATH_RAIZ, PATH_BACKUP, PATH_DOWLOAD, FILE_PROCESS_BACKUP, FILE_NAME, FIE_DOWLOAD);
            //show("Exemplo");
         }},
-        {label: 'Atualizar', type: 'radio', checked: true, click: () =>{
+        {label: 'Atualizar', type: 'radio', checked: false, click: () =>{
             updateVersion(PATH_RAIZ, PATH_BACKUP, PATH_DOWLOAD, FILE_PROCESS_BACKUP, FILE_NAME, FIE_DOWLOAD);
         }},
-        {label: 'Restore', type: 'radio', checked: true, click: () =>{
-            dialog.showOpenDialog({properties: ['openfile'] }, (paths) => {
-                console.log(paths);     
-            });
+        {label: 'Restore', type: 'radio', checked: false, click: () =>{
+            restoreVersion(PATH_RAIZ, PATH_BACKUP,FILE_PROCESS_BACKUP,FILE_NAME );
         }}
     ]);
 
