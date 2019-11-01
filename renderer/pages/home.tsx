@@ -26,8 +26,7 @@ const Home = () => {
       </Head>
       <ButtonAppBar></ButtonAppBar>
       <div className={classes.root}>
-        <Box display="flex">
-          <ImgMediaCard></ImgMediaCard>
+        <Box display="flex" flexDirection="column" flexWrap="wrap" justifyContent="center" width="100%">
           <ImgMediaCard></ImgMediaCard>
           <ImgMediaCard></ImgMediaCard>
         </Box>
