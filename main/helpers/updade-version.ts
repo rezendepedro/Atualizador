@@ -3,9 +3,9 @@ import restoreVersion from './restore-version';
 const fs = require('fs');
 const AdmZip = require('adm-zip');
 
-export default function updadeVersion(raiz, path, pathDowload, fileProcess, fileName, fileDowload): void {
+export default function updadeVersion(raiz, pathBackup, pathDowload, fileProcess, fileBackup, fileDowload): void {
     try {
-        if (!backupVersion(raiz, path, pathDowload, fileProcess, fileName, fileDowload))
+        if (!backupVersion(raiz, pathBackup, pathDowload, fileProcess, fileBackup, fileDowload))
             throw "Erro ao realizar backup";
 
         if (!fs.existsSync(pathDowload))
@@ -18,9 +18,7 @@ export default function updadeVersion(raiz, path, pathDowload, fileProcess, file
         console.log('Versao extraida com sucesso!');
 
     } catch{
-        restoreVersion();
-
-    } finally {
+        restoreVersion(raiz, pathBackup, fileProcess, fileBackup);
 
     }
 
