@@ -2,15 +2,26 @@ const { resolve } = require('path');
 const { app, Menu , Tray, dialog } = require('electron');
 const  fs  = require('fs');
 const  AdmZip  = require ('adm-zip');
+const net = require('net');
+const child = require('child_process').execFile;
 
+//ATUALIZADOR DESKTOP
 const PATH_RAIZ = resolve(__dirname, 'raiz');
 const PATH_DOWLOAD = resolve(__dirname, 'dowload');
 const PATH_BACKUP = resolve(__dirname, 'backup');
 const FILE_PROCESS_BACKUP = '\\backupversionTEMP.zip';
 const FILE_NAME = '\\backuplastversion.zip';
 const FIE_DOWLOAD = '\\lastversion.zip';
+const PATH_PDVREAL =  'C:\\DELPHI\\ECFLBC';//'C:\\Users\\LBC Sistemas\\Documents'//
+const FILENAME_EXEPDV = '\\ConversoesLBC.exe';//'\\LbcDrbc.exe';
+const PARAM_PDVSERVER = ['/NFCE /SQLSERVER'];
 
+//TCP  
+var HOST = '127.0.0.1'; // parametrizar o IP do Listen
+var PORT =  139; // porta TCP LISTEN
 
+// PDV
+var appPDV = null;
 
 
 checkBackup = (pathBackup, fileName) => {
@@ -24,7 +35,7 @@ checkBackup = (pathBackup, fileName) => {
       
     return true;  
 }
-roolBack = (path, fileProcess, fileName) =>{
+roolBack = (path, fileProcess, fileName) => {
     console.log("Roolback: " + path + fileProcess );
     if (checkBackup(path, fileName)){
         if(fs.existsSync(path + fileProcess)){
@@ -161,6 +172,58 @@ show = (mensage) => {
     console.log(mensage);
 }
 
+executarExe = (path, filename, parameters) => {
+    console.log('abrindoo pdv...');
+    appPDV = child(path + filename, (err, data, se) => {
+       // console.log(err)
+        console.log(data.toString());
+       //console.log(se.length === 0 ? "admin" : "not admin");
+    });
+
+    console.log('Vou fechar a aplicação filha em 10 segundos');
+
+    setTimeout(function() {
+        if(appPDV){
+            console.log('fechando....');
+            appPDV.kill();
+        }
+    }, 10000);
+
+    
+
+    
+}
+
+
+
+TcpServer = () => {
+    // Cria a instância do Server e aguarda uma conexão
+    net.createServer( (sock) => {
+    
+        // Opa, recebemos uma conexão - um objeto socket é associado à conexão automaticamente
+        console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
+
+        // Adiciona um 'data' - "event handler" nesta instância do socket
+        sock.on('data', function(data) {
+            // dados foram recebidos no socket 
+            // Escreve a mensagem recebida de volta para o socket (echo)
+            console.log('menssagem: ' + data);
+            sock.write(data);
+            if(data.includes('atualizar')){
+                updateVersion(PATH_RAIZ, PATH_BACKUP, PATH_DOWLOAD, FILE_PROCESS_BACKUP, FILE_NAME, FIE_DOWLOAD); 
+            }
+        });
+
+        // Adiciona um 'close' - "event handler" nesta instância do socket
+        sock.on('close', function(data) {
+            // conexão fechada
+            console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+        });
+
+    }).listen(PORT, HOST);
+
+}
+
 
 
 app.on('ready', () => {
@@ -180,10 +243,22 @@ app.on('ready', () => {
             restoreVersion(PATH_RAIZ, PATH_BACKUP,FILE_PROCESS_BACKUP,FILE_NAME );
         }}
     ]);
+    try{
+        executarExe(PATH_PDVREAL, FILENAME_EXEPDV, PARAM_PDVSERVER);
+    }catch(Ex){
+        console.log('Erro ao abrir PDV:' + Ex.message());
+        
+    } 
+   
+    
+
+    TcpServer();
+    
+    console.log('Server listening on ' + HOST +':'+ PORT);
 
 
     tray.setToolTip('Atualizador');
     
     tray.setContextMenu(contextMenu);
     
-})
+});

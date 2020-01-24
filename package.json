@@ -2,7 +2,7 @@
   "name": "atualizador",
   "version": "1.0.0",
   "description": "Atualiador de software dektops",
-  "main": "app/background.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "nextron",
