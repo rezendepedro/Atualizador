@@ -1,0 +1,90 @@
+ATUALIZADOR
+
+
+Comunicação PDV com ATUALIZADOR TCP
+Abertura do PDV com atualizador
+checagem de funcionamento em duas pontos atualizador verifica pdv e pdv verifica atualizador.
+Atualizador esta fazendo backup, compactando, backup temporario, extraindo, e restaurando versão.
+quando abrir aplicação enviar informações do cliente e do sistema (cnpj e versão) para o atualizador.
+criar rotina que vai verificar no web service a versão.
+
+verificar permissoes de pasta para utilizar o win exec
+
+
+https://stackoverflow.com/questions/47023252/i-got-this-error-after-package-error-eacces-permission-denied-open?rq=1  ---> tela e tray icon
+
+
+
+Abrir com de splash loader abrindo PDV...
+depois minimizar e criar rotina para sempre veriricar conexao com PDV
+fazer mesma rotina no PDV para verificar se o atualizador esta aberto
+
+
+
+LBC Atualizador
+
+Legenda:
+1 dia  = 7 horas
+
+
+1 - Criar serviodr TCP no atualizador client para comunicar com o PDV e configurar compoenete no PDV para comunicar.(14 horas)  
+    - Servidor TCP Atualizador (feito, 7 horas) 
+    - Envio de dados do PDV via TCP.(feito, 3 horas) 
+    - validação de comunicação para inicar funções.(pendente,estimo 4 horas)
+	
+2 - Inicar PDV com atualizador, criar rotina de checagem de comunicação, quando não tiver comunicação um sistema mantém o outro aberto. (13 horas)
+    - Abrir PDV com atualizador (feito, utilizado tempo em pesquisa, 7 horas)
+	- Checagem constante de conexao do atualizador.(pendente, estimo 3 horas ) 
+	- Checagem constante de conexao do PDV.(pendente, estimo 3 horas)
+	
+	
+3 - Rotina de backup (Feito)
+  - Verificar arquivos a serem feitos backups na nova versão.(feito, estava pronto)
+  - Renomear arquivo de backup antigo para possivel restore - TEMP(feito, estava pronto)
+  - compactar arquivos de backup(feito, estava pronto)
+  - excluir backup antigo e matém somente o novo.(feito, estava pronto)
+  
+  
+4 - rotina de Restore (Feito)
+    - Em qualquer erro durante o processo de backup ou extração da versão o sistema faz um roolback.(feito, estava pronto)
+	- roolback, descompactar backup na raiz, e o backup temporario volta a ser o backup original.(feito, estava pronto)
+
+
+5 - rotina de Dowload (11 horas)   
+	- Criar rotina de consulta para envio de dados da Empresa(Versão, CNPJ, ect...) versão teste.
+			 
+
+6 - rotina de atualização (7 horas horas)	
+	 - Criar rotina de checagem de versão verificando se possui algum versão baixada pronta para atualizar.(7 horas)
+	 - Executar rotina para veririfcar disponibilidade de atualização (feito, estava pronto)
+	 - realizar rotina de backup (feito, estava pronto)
+	 - extrair versão de dowload na pasta raiz. (feito, estava pronto)
+	 - executar rotina de inicar o sistema depois de atualizar.(feito, estava pronto)
+	 
+	 
+7 - Disponibilidade de Atualização (CRITÍCO desafios e testes,estimo 55 horas)
+    - Regra de negocio aplicada por empresa para atualização (Atualização quando desligar, Atualização forçada com base no status critico da versão(aviso previo de 10 minutos, criar pontos no sistema ocupado para evitar corrupção), com aviso previo(alguns dias)) (pendente, 21 horas)
+	- Atualizador por PDV CLIENT/ SERVER (pendente, 14 horas)
+    - Quando versão disponivel para atualização, atualizador server vai criar uma FLAG de pronto para Atualizar, na rotina o Atualizador CLIENT vai receber que o server esta pronto e comunicar com o OPERADOR(de acordo com a regra de negocio) (pendente, 4 horas)
+    - Depois que todos os PDVS estiverem fechado o Atualizador SERVER ira fechar o PDV SERVER e iniciar a atualiação.(pendente, 5 pendente)
+    - Ao terminar a atualização do PDV SERVER e ele estiver executado, ATUALIZADOR CLIENT vai receber confirmação e atualizar os PDVS CLIENTS (pendente, 7 horas)
+    - Qualquer falha no processo do PDV SERVER e inicado o roolback e não é atualizado os CLIETS (pendete, 4 horas)
+	
+	
+	Estimada 100 horas = 15 dias para implementação
+    revisão: 14 horas = 2 dias para revisão geral e re-testar.
+	
+	total 17 dias
+	
+	
+	
+	verificar portas em uso
+	verifcar se PDV nao abrir qual a ação?restore?
+	Criar Thread para rotina de comunicação
+	Executar PDV Atualizador
+	
+	
+    	
+	 
+	 
+

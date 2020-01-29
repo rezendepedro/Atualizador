@@ -1,7 +1,7 @@
 node_modules
 backup
 raiz
-dowload
+download
 node_modules
 *.log
 .next
@@ -10,3 +10,12 @@ dist
 release-builds
 LOGATUALIZADOR.ON
 LOGATUALIZADOR.txt
+AUTOMACAO
+DATA
+IMAGENS
+NFCE
+NFE
+OPN
+SAT
+ScannTech
+SITEF
