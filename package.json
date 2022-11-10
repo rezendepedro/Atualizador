@@ -37,7 +37,7 @@
     "@types/react-dom": "^16.9.2",
     "@zeit/next-css": "^1.0.1",
     "babel-loader": "^8.0.6",
-    "electron": "^7.0.0",
+    "electron": "^18.3.7",
     "electron-builder": "^21.2.0",
     "electron-packager": "^14.2.0",
     "fontfaceobserver": "^2.1.0",
